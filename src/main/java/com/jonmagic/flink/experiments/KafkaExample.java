@@ -1,24 +1,44 @@
 package com.jonmagic.flink.experiments;
 
-import org.apache.flink.api.common.eventtime.WatermarkStrategy;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.connector.kafka.source.KafkaSource;
-import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 public class KafkaExample {
     public static void main(String[] args) throws Exception {
-        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        KafkaSource<String> source = KafkaSource.<String>builder()
-                .setBootstrapServers("localhost:9092")
-                .setTopics("ruby-test-topic")
-                .setGroupId("flink-001")
-                .setStartingOffsets(OffsetsInitializer.earliest())
-                .setValueOnlyDeserializer(new SimpleStringSchema())
-                .build();
-        DataStream<String> messages = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
-        messages.print();
-        env.execute("Testing");
+         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+//         KafkaSource<String> source = KafkaSource.<String>builder()
+//                 .setBootstrapServers("localhost:9092")
+//                 .setTopics("ruby-test-topic")
+//                 .setGroupId("flink-001")
+//                 .setStartingOffsets(OffsetsInitializer.earliest())
+//                 .setValueOnlyDeserializer(new SimpleStringSchema())
+//                 .build();
+//         DataStream<String> messages = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
+//         messages.print();
+//         env.execute("Testing");
+        StreamTableEnvironment tEnv = StreamTableEnvironment.create(env);
+        tEnv.executeSql(
+                 "CREATE TABLE simple_test (" +
+                 "  uid BIGINT," +
+                 "  name STRING," +
+                 "  category_type INT," +
+                 "  content BINARY," +
+                 "  price DOUBLE," +
+                 "  value_map map<BIGINT, row<v1 BIGINT, v2 INT>>," +
+                 "  value_arr array<row<v1 BIGINT, v2 INT>>," +
+                 "  corpus_int INT," +
+                 "  corpus_str STRING" +
+                 ") WITH (" +
+                 "  'connector' = 'kafka'," +
+                 "  'topic' = 'user_behavior'," +
+                 "  'properties.bootstrap.servers' = 'localhost:9092'," +
+                 "  'properties.group.id' = 'testGroup'," +
+                 "  'scan.startup.mode' = 'earliest-offset'," +
+                 "  'format' = 'protobuf'," +
+                 "  'protobuf.message-class-name' = 'com.jonmagic.flink.experiments.SimpleTest'," +
+                 "  'protobuf.ignore-parse-errors' = 'true'" +
+                 ")"
+        );
+        tEnv.executeSql("SELECT * FROM simple_test").print();
     }
 }
