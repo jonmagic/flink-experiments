@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+protoc --java_out=src/main/java SimpleTest.proto
+protoc --ruby_out=lib SimpleTest.proto
+
+mvn package
+cp target/flink-experiments-1.0.0.jar jars/flink-experiments.jar
