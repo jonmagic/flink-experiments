@@ -5,17 +5,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 public class KafkaExample {
     public static void main(String[] args) throws Exception {
-         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-//         KafkaSource<String> source = KafkaSource.<String>builder()
-//                 .setBootstrapServers("localhost:9092")
-//                 .setTopics("ruby-test-topic")
-//                 .setGroupId("flink-001")
-//                 .setStartingOffsets(OffsetsInitializer.earliest())
-//                 .setValueOnlyDeserializer(new SimpleStringSchema())
-//                 .build();
-//         DataStream<String> messages = env.fromSource(source, WatermarkStrategy.noWatermarks(), "Kafka Source");
-//         messages.print();
-//         env.execute("Testing");
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tEnv = StreamTableEnvironment.create(env);
         tEnv.executeSql(
                  "CREATE TABLE simple_test (" +
