@@ -17,7 +17,7 @@ topic = "user_behavior"
 
   message = {
     uid: i,
-    name: "test i",
+    name: "test #{i}",
     category_type: 3,
     content: "Hello World #{i}",
     price: 0.99 + i,
@@ -35,7 +35,7 @@ topic = "user_behavior"
 
   delivery_handles << producer.produce(
     topic:   topic,
-    payload: Com::Example::SimpleTest.new(message).to_proto,
+    payload: Com::Jonmagic::Flink::Experiments::SimpleTest.new(message).to_proto,
     key:     "Key #{i}"
   )
 end
