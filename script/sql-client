@@ -23,6 +23,8 @@ else
 fi
 
 mvn package
+cp target/flink-experiments-1.0.0.jar jars/flink-experiments.jar
+
 ./flink/bin/start-cluster.sh
-./flink/bin/sql-client.sh embedded -j target/flink-experiments-1.0.0.jar
+./flink/bin/sql-client.sh -l jars/
 ./flink/bin/stop-cluster.sh
