@@ -5,22 +5,22 @@ require 'google/protobuf'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("SimpleTest.proto", :syntax => :proto2) do
-    add_message "com.example.SimpleTest" do
+    add_message "com.jonmagic.flink.experiments.SimpleTest" do
       optional :uid, :int64, 1
       optional :name, :string, 2
       optional :category_type, :int32, 3
       optional :content, :bytes, 4
       optional :price, :double, 5
-      map :value_map, :int64, :message, 6, "com.example.SimpleTest.InnerMessageTest"
-      repeated :value_arr, :message, 7, "com.example.SimpleTest.InnerMessageTest"
-      optional :corpus_int, :enum, 8, "com.example.SimpleTest.Corpus"
-      optional :corpus_str, :enum, 9, "com.example.SimpleTest.Corpus"
+      map :value_map, :int64, :message, 6, "com.jonmagic.flink.experiments.SimpleTest.InnerMessageTest"
+      repeated :value_arr, :message, 7, "com.jonmagic.flink.experiments.SimpleTest.InnerMessageTest"
+      optional :corpus_int, :enum, 8, "com.jonmagic.flink.experiments.SimpleTest.Corpus"
+      optional :corpus_str, :enum, 9, "com.jonmagic.flink.experiments.SimpleTest.Corpus"
     end
-    add_message "com.example.SimpleTest.InnerMessageTest" do
+    add_message "com.jonmagic.flink.experiments.SimpleTest.InnerMessageTest" do
       optional :v1, :int64, 1
       optional :v2, :int32, 2
     end
-    add_enum "com.example.SimpleTest.Corpus" do
+    add_enum "com.jonmagic.flink.experiments.SimpleTest.Corpus" do
       value :UNIVERSAL, 0
       value :WEB, 1
       value :IMAGES, 2
@@ -33,9 +33,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
 end
 
 module Com
-  module Example
-    SimpleTest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("com.example.SimpleTest").msgclass
-    SimpleTest::InnerMessageTest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("com.example.SimpleTest.InnerMessageTest").msgclass
-    SimpleTest::Corpus = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("com.example.SimpleTest.Corpus").enummodule
+  module Jonmagic
+    module Flink
+      module Experiments
+        SimpleTest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("com.jonmagic.flink.experiments.SimpleTest").msgclass
+        SimpleTest::InnerMessageTest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("com.jonmagic.flink.experiments.SimpleTest.InnerMessageTest").msgclass
+        SimpleTest::Corpus = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("com.jonmagic.flink.experiments.SimpleTest.Corpus").enummodule
+      end
+    end
   end
 end
