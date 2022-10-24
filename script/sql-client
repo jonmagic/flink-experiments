@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e
+
+install_flink() {
+  curl -L https://p199.p4.n0.cdn.getcloudapp.com/items/rRuQzzLe/4b2c76d7-588e-466c-8826-3918e1ecd5ae.gz?v=d46e5091b2ebb0ce97d39eca0c40ad82 --output flink-1.16.0.tar.gz
+  tar zxvf flink-1.16.0.tar.gz
+  mv flink-1.16.0 flink
+  rm flink-1.16.0.tar.gz
+  echo "1.16.0.rc1" > flink/version
+}
+
+# Download and setup local copy of flink
+if [ -d "flink" ]; then
+  current_version=$(cat flink/version)
+
+  if [ $current_version != "1.16.0.rc1" ]; then
+    rm -rf flink
+    install_flink
+  fi
+else
+  install_flink
+fi
+
+mvn package
+cp target/flink-experiments-1.0.0.jar jars/flink-experiments.jar
+
+./flink/bin/start-cluster.sh
+./flink/bin/sql-client.sh -l jars/
+./flink/bin/stop-cluster.sh

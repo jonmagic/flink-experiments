@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require "google/protobuf"
+require "rdkafka"
+require_relative "../lib/SimpleTest_pb"
+
+config = {
+  :"bootstrap.servers" => "localhost:9092",
+}
+producer = Rdkafka::Config.new(config).producer
+
+delivery_handles = []
+topic = "user_behavior"
+
+100.times do |i|
+  puts "Producing message #{i}"
+
+  message = {
+    uid: i,
+    name: "test #{i}",
+    category_type: 3,
+    content: "Hello World #{i}",
+    price: 0.99 + i,
+    value_map: {
+      i => { v1: i, v2: i },
+      i+1 => { v1: i+1, v2: i+1000 },
+    },
+    value_arr: [
+      { v1: i, v2: i },
+      { v1: i+1, v2: i+1000 },
+    ],
+    corpus_int: 3,
+    corpus_str: "LOCAL",
+  }
+
+  delivery_handles << producer.produce(
+    topic:   topic,
+    payload: Com::Jonmagic::Flink::Experiments::SimpleTest.new(message).to_proto,
+    key:     "Key #{i}"
+  )
+end
+
+delivery_handles.each(&:wait)

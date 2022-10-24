@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+protoc --java_out=src/main/java SimpleTest.proto
+protoc --ruby_out=lib SimpleTest.proto
